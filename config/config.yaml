@@ -1,1 +1,12 @@
-models: {}
+environment:
+  name: "HalfCheetah-v2"
+  max_path_length: 1000
+  num_data_points: 10000
+
+policy:
+  pkl_file: "path_to_policy.pkl"
+  random: false
+
+output:
+  file: "output.hdf5"
+

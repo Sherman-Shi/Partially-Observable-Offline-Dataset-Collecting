@@ -1,0 +1,17 @@
+environment:
+  name: "CartPole-v1"
+  max_path_length: 1000
+  num_data_points: 1000000
+
+model:
+  name: "random"
+  random_policy: false
+
+output:
+  file_name: "output.hdf5"
+  compression: "gzip"
+
+wandb:
+  load: true
+  project_name: "Partial-Offline-Dataset-Collecting"
+  entity: "sureman0117"

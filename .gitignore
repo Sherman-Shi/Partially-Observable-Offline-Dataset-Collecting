@@ -1,3 +1,6 @@
+data/
+wandb/
 create.sh
 *.log
 *.pyc
+*.hdf5

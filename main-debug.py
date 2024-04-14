@@ -6,6 +6,8 @@ import numpy as np
 import torch
 import gymnasium as gym 
 from datetime import datetime
+import sys 
+sys.path.append("/home/zhenpeng/桌面/PORL/Partially-Observable-Offline-Dataset-Collecting")
 from model.random import BasicModel
 from collector.data_collector import DataCollector
 import wandb
@@ -32,7 +34,7 @@ def ensure_directory(path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str, default='config/random.yaml', help='Path to the configuration file (default: config/random.yaml)')
+    parser.add_argument('--config', type=str, default='/home/zhenpeng/桌面/PORL/Partially-Observable-Offline-Dataset-Collecting/config/random.yaml', help='Path to the configuration file (default: config/random.yaml)')
     args = parser.parse_args()
 
     config = load_config(args.config)

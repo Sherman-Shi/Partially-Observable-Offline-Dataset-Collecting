@@ -9,7 +9,7 @@ from datetime import datetime
 import sys 
 sys.path.append("/home/zhenpeng/桌面/PORL/Partially-Observable-Offline-Dataset-Collecting")
 from model.random import BasicModel
-from collector.data_collector import DataCollector
+from collector.data_collector import DataCollector, DataCollector_MiniGrid
 import wandb
 
 def load_config(config_path):
@@ -34,7 +34,7 @@ def ensure_directory(path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str, default='/home/zhenpeng/桌面/PORL/Partially-Observable-Offline-Dataset-Collecting/config/random.yaml', help='Path to the configuration file (default: config/random.yaml)')
+    parser.add_argument('--config', type=str, default='/home/zhenpeng/桌面/PORL/Partially-Observable-Offline-Dataset-Collecting/config/random_minigrid.yaml', help='Path to the configuration file (default: config/random.yaml)')
     args = parser.parse_args()
 
     config = load_config(args.config)
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     model_name = config['model']['name']
     random_policy = config['model']['random_policy']
     model = BasicModel(env_name)
-    collector = DataCollector(config, model, max_path_length, num_data_points, random=random_policy)
+    collector = DataCollector_MiniGrid(config, model, max_path_length, num_data_points, random=random_policy)
     data = collector.collect_data()
 
     # Generate a unique file name using the timestamp

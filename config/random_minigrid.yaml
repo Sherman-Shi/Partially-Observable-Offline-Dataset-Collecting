@@ -1,7 +1,7 @@
 environment:
-  name: "MiniGrid-BlockedUnlockPickup-v0"
+  name: "MiniGrid-Dynamic-Obstacles-16x16-v0"
   max_path_length: 1000
-  num_data_points: 10000000
+  num_data_points: 10000000  
 
 model:
   name: "random"

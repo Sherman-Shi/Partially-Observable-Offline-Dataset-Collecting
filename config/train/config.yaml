@@ -1,0 +1,38 @@
+env:
+  name: "Pendulum-v0"
+
+training:
+  max_trajectory_len: 200
+  num_iters: 150
+  num_init_rollouts_pool: 5
+  num_rollouts_per_iter: 1
+  num_updates_per_iter: 1
+  sampled_seq_len: 64
+  batch_size: 32
+  buffer_size: 1000000
+  log_interval: 5
+  eval_num_rollouts: 10
+  save_interval: 30
+
+model:
+  obs_dim: 3
+  action_dim: 1
+  encoder: "lstm"
+  algo: "td3"
+  action_embedding_size: 8
+  observ_embedding_size: 32
+  reward_embedding_size: 8
+  rnn_hidden_size: 128
+  dqn_layers:
+    - 128
+    - 128
+  policy_layers:
+    - 128
+    - 128
+  lr: 0.0003
+  gamma: 0.9
+  tau: 0.005
+
+wandb:
+  project_name: "pomdp_dataset_test"
+  entity: "sureman0117"

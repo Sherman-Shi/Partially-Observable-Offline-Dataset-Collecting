@@ -9,14 +9,16 @@ import torchkit.pytorch_utils as ptu
 
 
 class Trainer:
-    def __init__(self, config, env, agent):
+    def __init__(self, config, env, obs_dim, action_dim, agent):
         self.config = config
         self.env = env
+        self.obs_dim = obs_dim
+        self.action_dim = action_dim
         self.agent = agent
         self.policy_storage = SeqReplayBuffer(
             max_replay_buffer_size=int(self.config['training']['buffer_size']),
-            observation_dim=self.config['model']['obs_dim'],
-            action_dim=self.config['model']['action_dim'],
+            observation_dim=self.obs_dim,
+            action_dim=self.action_dim,
             sampled_seq_len=self.config['training']['sampled_seq_len'],
             sample_weight_baseline=0.0,
         )

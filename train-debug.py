@@ -23,10 +23,20 @@ def main():
     env = gym.make(config['env']['name'])
     ptu.set_gpu_mode(torch.cuda.is_available(), 0)
 
+    # Dynamically get observation and action dimensions
+    obs_dim = env.observation_space.shape[0]
+    # Handle both discrete and continuous action spaces
+    if isinstance(env.action_space, gym.spaces.Discrete):
+        action_dim = env.action_space.n  # Use n for discrete action spaces
+    elif isinstance(env.action_space, gym.spaces.Box):
+        action_dim = env.action_space.shape[0]  # Use shape for continuous action spaces
+    else:
+        raise NotImplementedError("Action space type not supported")
+        
     # Initialize model
     agent = Policy_RNN(
-        obs_dim=config['model']['obs_dim'],
-        action_dim=config['model']['action_dim'],
+        obs_dim=obs_dim,
+        action_dim=action_dim,
         encoder=config['model']['encoder'],
         algo_name=config['model']['algo'],
         action_embedding_size=config['model']['action_embedding_size'],
@@ -45,7 +55,7 @@ def main():
         wandb.init(project=config['wandb']['project_name'], entity=config['wandb']['entity'], config=config)
 
     # Initialize Trainer
-    trainer = Trainer(config, env, agent)
+    trainer = Trainer(config, env, obs_dim, action_dim, agent)
 
     # Start Training
     trainer.train()

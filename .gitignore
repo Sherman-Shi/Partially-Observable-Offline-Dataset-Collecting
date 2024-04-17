@@ -1,5 +1,6 @@
 data/
 wandb/
+saved_models/
 create.sh
 *.log
 *.pyc

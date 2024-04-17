@@ -1,5 +1,5 @@
 env:
-  name: "Pendulum-v1"
+  name: "MountainCarContinuous-v0"
 
 training:
   max_trajectory_len: 200
@@ -15,8 +15,6 @@ training:
   save_interval: 10000
 
 model:
-  obs_dim: 3
-  action_dim: 1
   encoder: "lstm"
   algo: "td3"
   action_embedding_size: 8

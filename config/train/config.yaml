@@ -1,18 +1,18 @@
 env:
-  name: "Pendulum-v0"
+  name: "Pendulum-v1"
 
 training:
   max_trajectory_len: 200
-  num_iters: 150
+  num_iters: 100000
   num_init_rollouts_pool: 5
   num_rollouts_per_iter: 1
   num_updates_per_iter: 1
   sampled_seq_len: 64
-  batch_size: 32
+  batch_size: 64
   buffer_size: 1000000
-  log_interval: 5
+  log_interval: 100
   eval_num_rollouts: 10
-  save_interval: 30
+  save_interval: 10000
 
 model:
   obs_dim: 3
@@ -34,5 +34,6 @@ model:
   tau: 0.005
 
 wandb:
+  log: true
   project_name: "pomdp_dataset_test"
   entity: "sureman0117"

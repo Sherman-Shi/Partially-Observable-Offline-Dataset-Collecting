@@ -56,8 +56,10 @@ class ModelFreeOffPolicy_Separate_RNN(nn.Module):
         self.gamma = gamma
         self.tau = tau
 
-        self.algo = RL_ALGORITHMS[algo_name](**kwargs[algo_name], action_dim=action_dim)
-
+        #self.algo = RL_ALGORITHMS[algo_name](**kwargs[algo_name], action_dim=action_dim)
+        self.algo = RL_ALGORITHMS[algo_name](action_dim=action_dim)
+        self.encoder = encoder 
+        
         # Critics
         self.critic = Critic_RNN(
             obs_dim,

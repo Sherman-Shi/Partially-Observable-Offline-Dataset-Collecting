@@ -4,7 +4,7 @@ import wandb
 import os 
 
 from .buffers.seq_replay_buffer_vanilla import SeqReplayBuffer
-from ..utils import helpers as utl
+from utils import helpers as utl
 import torchkit.pytorch_utils as ptu
 
 
@@ -36,12 +36,15 @@ class Trainer:
             loss_info = self.update()
 
             # Log training information using Wandb
-            wandb.log(loss_info, step=iter_num)
+            if self.config['wandb']['log']:
+                wandb.log(loss_info, step=iter_num)
+            print(f"Loss: iter {iter_num}, loss {loss_info}\n")
 
             # Evaluation and logging the performance
             if iter_num % self.config['training']['log_interval'] == 0:
                 eval_rewards = self.collect_rollouts(self.config['training']['eval_num_rollouts'], deterministic=True, train_mode=False)
-                wandb.log({'eval_rewards': eval_rewards}, step=iter_num)
+                if self.config['wandb']['log']:
+                    wandb.log({'eval_rewards': eval_rewards}, step=iter_num)
 
             if iter_num % self.save_interval == 0 and iter_num > 0:
                 self.save_models(iter_num)
@@ -82,7 +85,7 @@ class Trainer:
 
             while not done_rollout:
                 if random_actions:
-                    action = ptu.FloatTensor([self.env.action_space.sample()]).unsqueeze(0)
+                    action = ptu.FloatTensor([self.env.action_space.sample()])
                 else:
                     (action, _, _, _), internal_state = self.agent.act(
                         prev_internal_state=internal_state,
@@ -99,23 +102,26 @@ class Trainer:
                 if train_mode:
                     obs_list.append(obs)
                     act_list.append(action)
-                    rew_list.append(reward.unsqueeze(0))
-                    term_list.append(torch.tensor([not done_rollout], dtype=torch.bool))
-                    next_obs_list.append(next_obs.unsqueeze(0))
+                    rew_list.append(reward)
+                    term_list.append(int(not done_rollout))
+                    next_obs_list.append(next_obs)
 
-                obs = next_obs.unsqueeze(0)
+                obs = next_obs.clone()
+                #obs = next_obs.unsqueeze(0)
 
             # Aggregate data for this episode
-            total_steps += len(obs_list)
+            if train_mode:
+                total_steps += len(obs_list)
+
             total_rewards += episodic_reward
 
             if train_mode:
                 self.policy_storage.add_episode(
-                    observations=ptu.get_numpy(torch.cat(obs_list)),
-                    actions=ptu.get_numpy(torch.cat(act_list)),
-                    rewards=ptu.get_numpy(torch.cat(rew_list)),
+                    observations=ptu.get_numpy(torch.cat(obs_list, dim=0)),
+                    actions=ptu.get_numpy(torch.cat(act_list, dim=0)),
+                    rewards=ptu.get_numpy(torch.cat(rew_list, dim=0)),
                     terminals=np.array(term_list).reshape(-1, 1),
-                    next_observations=ptu.get_numpy(torch.cat(next_obs_list))
+                    next_observations=ptu.get_numpy(torch.cat(next_obs_list, dim=0))
                 )
 
         # Return average reward per episode if not in training mode, total steps if in training mode
@@ -124,7 +130,7 @@ class Trainer:
 
 
     def update(self):
-        batch = self.policy_storage.sample_transitions(self.config['training']['batch_size'])
+        batch = ptu.np_to_pytorch_batch(self.policy_storage.random_episodes(self.config['training']['batch_size']))
         loss_info = self.agent.update(batch)
         return loss_info
 
@@ -160,7 +166,7 @@ class Trainer:
             f"train_iter_{iter_num}"
         )
 
-        self.save_model(self.agent.algo.actor, directory, "td3_actor.pth")
+        self.save_model(self.agent.actor.policy, directory, "td3_actor.pth")
         self.save_model(self.agent.actor.rnn, directory, "rnn_model.pth")
         print(f"Models saved for iteration {iter_num} in directory {directory}")
 

@@ -8,10 +8,9 @@ import dateutil.tz
 import tempfile
 from collections import OrderedDict, Set
 
-try:
-    from torch.utils.tensorboard import SummaryWriter
-except:
-    from tensorboardX import SummaryWriter
+
+#from torch.utils.tensorboard import SummaryWriter
+
 
 LOG_OUTPUT_FORMATS = ["stdout", "log", "csv", "tensorboard"]
 # Also valid: json, tensorboard

@@ -3,6 +3,9 @@ import gym
 import wandb
 from pathlib import Path
 import torch 
+import sys 
+sys.path.append("/home/zhenpeng/桌面/PORL/Partially-Observable-Offline-Dataset-Collecting")
+
 import torchkit.pytorch_utils as ptu
 from policies.models.policy_rnn import ModelFreeOffPolicy_Separate_RNN as Policy_RNN
 from trainer.trainer import Trainer
@@ -13,7 +16,7 @@ def load_config(path):
 
 def main():
     # Load configuration
-    config_path = Path("config/train/config.yaml")
+    config_path = Path("/home/zhenpeng/桌面/PORL/Partially-Observable-Offline-Dataset-Collecting/config/train/config.yaml")
     config = load_config(config_path)
 
     # Initialize environment

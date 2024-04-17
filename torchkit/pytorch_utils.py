@@ -1,4 +1,4 @@
-# -*- coding: future_fstrings -*-
+
 import torch
 import numpy as np
 import os
@@ -70,7 +70,7 @@ def elem_or_tuple_to_variable(elem_or_tuple):
 
 def filter_batch(np_batch):
     for k, v in np_batch.items():
-        if v.dtype == np.bool:
+        if v.dtype == bool:
             yield k, v.astype(int)
         else:
             yield k, v
